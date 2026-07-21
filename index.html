@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="description" content="ta7telard — underground electronic music / rave culture. Cairo, Egypt.">
+<title>ta7telard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:#16151D;
+  color:#e0dcd4;
+  line-height:1.5;
+}
+
+/* ===== GRAIN OVERLAY ===== */
+.grain-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:9999;
+  opacity:0.045;mix-blend-mode:overlay;
+}
+.grain-overlay::after{
+  content:'';display:block;width:100%;height:100%;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+  animation:grainShift 0.5s steps(3) infinite;
+}
+@keyframes grainShift{
+  0%,100%{transform:translate(0,0)}
+  33%{transform:translate(-1px,1px)}
+  66%{transform:translate(1px,-1px)}
+}
+
+/* ===== AMBIENT GLOW ===== */
+.ambient-glow{
+  position:fixed;pointer-events:none;z-index:0;
+  width:min(600px,80vmin);height:min(600px,80vmin);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(85,0,0,0.22) 0%,transparent 70%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:ambientPulse 8s ease-in-out infinite;
+}
+@keyframes ambientPulse{
+  0%,100%{opacity:0.35;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:0.65;transform:translate(-50%,-50%) scale(1.25)}
+}
+
+/* ===== WELCOME OVERLAY ===== */
+.welcome-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:#0d0c12;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.8s cubic-bezier(0.77,0,0.175,1),visibility 0.8s;
+  cursor:pointer;
+}
+.welcome-overlay.dismiss{opacity:0;visibility:hidden;pointer-events:none}
+.welcome-wordmark{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(3rem,10vw,7rem);
+  color:#e0dcd4;letter-spacing:0.02em;
+  position:relative;user-select:none;
+  animation:welcomeGlitchIn 1.2s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
+.welcome-wordmark::before,.welcome-wordmark::after{
+  content:'ta7telard';position:absolute;top:0;left:0;width:100%;height:100%;
+  font-family:'Syne',sans-serif;font-weight:800;
+}
+.welcome-wordmark::before{
+  color:#FF2A2A;animation:chromaticRed 2s infinite;clip-path:inset(0 0 55% 0);opacity:0;
+}
+.welcome-wordmark::after{
+  color:#00e5ff;animation:chromaticCyan 2s infinite;clip-path:inset(55% 0 0 0);opacity:0;
+}
+.welcome-wordmark.glitching::before,.welcome-wordmark.glitching::after{opacity:0.6}
+@keyframes welcomeGlitchIn{
+  0%{opacity:0;transform:translateY(20px);filter:blur(8px)}
+  30%{opacity:0.3;filter:blur(4px)}
+  60%{opacity:1;filter:blur(0);transform:translateY(0)}
+  70%{transform:translateX(-3px)}
+  75%{transform:translateX(3px)}
+  80%{transform:translateX(-1px)}
+  85%{transform:translateX(1px)}
+  100%{opacity:1;transform:translateX(0)}
+}
+@keyframes chromaticRed{
+  0%,100%{transform:translate(0,0)}
+  20%{transform:translate(-3px,0)}
+  40%{transform:translate(0,0)}
+  60%{transform:translate(-2px,1px)}
+  80%{transform:translate(0,0)}
+}
+@keyframes chromaticCyan{
+  0%,100%{transform:translate(0,0)}
+  20%{transform:translate(3px,0)}
+  40%{transform:translate(0,0)}
+  60%{transform:translate(2px,-1px)}
+  80%{transform:translate(0,0)}
+}
+.welcome-enter{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:0.85rem;
+  letter-spacing:0.35em;color:rgba(255,42,42,0.8);
+  margin-top:2.5rem;opacity:0;
+  animation:welcomeEnterIn 1s 2.2s forwards;
+  text-transform:uppercase;transition:color 0.3s,text-shadow 0.3s;
+}
+.welcome-enter:hover{color:#FF2A2A;text-shadow:0 0 20px rgba(255,42,42,0.6),0 0 60px rgba(255,42,42,0.3)}
+@keyframes welcomeEnterIn{to{opacity:1}}
+.welcome-enter .pulse-dot{display:inline-block;animation:welcomePulse 1.2s 2.5s infinite}
+@keyframes welcomePulse{0%,100%{opacity:0.3}50%{opacity:1}}
+.welcome-enter .pulse-dot:nth-child(2){animation-delay:0.2s}
+.welcome-enter .pulse-dot:nth-child(3){animation-delay:0.4s}
+
+/* ===== GLITCH FLASH ===== */
+.glitch-flash{
+  position:fixed;inset:0;background:rgba(255,42,42,0.08);
+  z-index:10001;pointer-events:none;opacity:0;transition:opacity 0.05s;
+}
+.glitch-flash.active{opacity:1}
+
+/* ===== MAIN APP CONTAINER ===== */
+.app{
+  position:fixed;inset:0;z-index:1;
+  display:flex;flex-direction:column;
+  opacity:0;transition:opacity 0.6s 0.3s;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.app.visible{opacity:1}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;
+  flex-shrink:0;
+  border-bottom:1px solid rgba(255,42,42,0.08);
+  background:rgba(22,21,29,0.95);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.topbar-brand{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;
+  letter-spacing:0.04em;color:#e0dcd4;text-decoration:none;
+  transition:color 0.3s;
+}
+.topbar-brand:hover{color:#FF2A2A}
+.topbar-nav{display:flex;gap:1.5rem;list-style:none}
+.topbar-nav button{
+  font-family:'Syne',sans-serif;font-weight:500;font-size:0.7rem;
+  letter-spacing:0.1em;color:rgba(224,220,212,0.5);
+  background:none;border:none;cursor:pointer;text-transform:uppercase;
+  transition:color 0.3s,text-shadow 0.3s;padding:4px 0;
+  position:relative;
+}
+.topbar-nav button::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:1px;
+  background:#FF2A2A;transition:width 0.3s cubic-bezier(0.77,0,0.175,1);
+}
+.topbar-nav button:hover,.topbar-nav button.active{
+  color:#FF2A2A;text-shadow:0 0 12px rgba(255,42,42,0.4);
+}
+.topbar-nav button:hover::after,.topbar-nav button.active::after{width:100%}
+
+/* ===== PANELS CONTAINER ===== */
+.panels{
+  flex:1;position:relative;overflow:hidden;
+  min-height:0;
+}
+
+/* ===== PANEL ===== */
+.panel{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:1.5rem;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.4s cubic-bezier(0.77,0,0.175,1);
+  overflow-y:auto;overflow-x:hidden;
+}
+.panel.active{opacity:1;pointer-events:auto}
+
+/* ===== SOCIAL PANEL (default) ===== */
+.social-panel{gap:1rem;text-align:center}
+.hero-wordmark{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(3rem,10vw,6rem);
+  color:#e0dcd4;letter-spacing:0.02em;
+  line-height:1;position:relative;
+}
+.hero-wordmark::before,.hero-wordmark::after{
+  content:'ta7telard';position:absolute;top:0;left:0;width:100%;height:100%;
+  font-family:'Syne',sans-serif;font-weight:800;pointer-events:none;
+}
+.hero-wordmark::before{color:#FF2A2A;clip-path:inset(0 0 52% 0);opacity:0.08;animation:heroChromaticRed 4s infinite}
+.hero-wordmark::after{color:#00e5ff;clip-path:inset(52% 0 0 0);opacity:0.05;animation:heroChromaticCyan 4s infinite}
+@keyframes heroChromaticRed{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,0)}75%{transform:translate(0,0)}}
+@keyframes heroChromaticCyan{0%,100%{transform:translate(0,0)}25%{transform:translate(2px,0)}75%{transform:translate(0,0)}}
+.hero-tagline{
+  font-family:'Space Grotesk',sans-serif;font-weight:400;
+  font-size:0.85rem;letter-spacing:0.15em;
+  color:rgba(224,220,212,0.5);text-transform:uppercase;
+}
+.hero-divider{width:30px;height:1px;background:rgba(255,42,42,0.5);margin:0.25rem 0}
+.social-buttons{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+
+/* ===== SOCIAL BUTTONS ===== */
+.social-btn{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.85rem 1.75rem;
+  border:1px solid rgba(255,42,42,0.25);
+  background:rgba(255,42,42,0.04);
+  color:#e0dcd4;text-decoration:none;
+  font-family:'Syne',sans-serif;font-weight:600;font-size:0.8rem;
+  letter-spacing:0.06em;text-transform:uppercase;
+  transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.social-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,42,42,0.15) 0%,transparent 100%);
+  opacity:0;transition:opacity 0.4s;
+}
+.social-btn:hover{
+  border-color:rgba(255,42,42,0.6);
+  box-shadow:0 0 30px rgba(255,42,42,0.2),0 0 60px rgba(255,42,42,0.08),inset 0 0 20px rgba(255,42,42,0.05);
+  transform:translateY(-2px);color:#fff;
+}
+.social-btn:hover::before{opacity:1}
+.social-btn svg{width:18px;height:18px;flex-shrink:0;fill:currentColor;transition:transform 0.3s}
+.social-btn:hover svg{transform:scale(1.1)}
+.social-btn.whatsapp:hover{
+  border-color:rgba(37,211,102,0.7);
+  box-shadow:0 0 30px rgba(37,211,102,0.2),0 0 60px rgba(37,211,102,0.08);
+}
+
+/* ===== EVENTS PANEL ===== */
+.events-panel{gap:0.75rem;justify-content:flex-start;padding-top:0.75rem}
+.panel-label{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:0.65rem;
+  letter-spacing:0.25em;color:#FF2A2A;text-transform:uppercase;
+}
+.panel-title{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:clamp(1.5rem,4vw,2.5rem);color:#e0dcd4;
+  letter-spacing:-0.01em;line-height:1.1;
+}
+.events-list{
+  width:100%;max-width:560px;
+  display:flex;flex-direction:column;gap:0.5rem;
+}
+.event-day-group{
+  border:1px solid rgba(255,255,255,0.04);
+  background:rgba(30,28,38,0.5);
+  overflow:hidden;
+  transition:border-color 0.3s;
+}
+.event-day-group:hover{
+  border-color:rgba(255,42,42,0.15);
+}
+.event-day-header{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.7rem;
+  letter-spacing:0.15em;color:#FF2A2A;text-transform:uppercase;
+  padding:0.5rem 0.85rem;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+  background:rgba(255,42,42,0.03);
+}
+.event-rows{
+  display:flex;flex-direction:column;
+}
+.event-row{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:0.55rem 0.85rem;
+  border-bottom:1px solid rgba(255,255,255,0.02);
+  transition:background 0.3s;
+}
+.event-row:last-child{border-bottom:none}
+.event-row:hover{background:rgba(255,42,42,0.03)}
+.event-row-city{
+  font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:0.6rem;
+  letter-spacing:0.08em;color:rgba(224,220,212,0.35);text-transform:uppercase;
+  min-width:48px;flex-shrink:0;
+}
+.event-row-info{flex:1;min-width:0}
+.event-row-venue{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:0.8rem;
+  color:#e0dcd4;line-height:1.2;
+}
+.event-row-extra{
+  font-family:'Space Grotesk',sans-serif;font-size:0.6rem;
+  color:rgba(224,220,212,0.35);
+  margin-top:1px;
+}
+.event-row-btn{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:0.6rem;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:#FF2A2A;text-decoration:none;
+  padding:0.35rem 0.75rem;
+  border:1px solid rgba(255,42,42,0.25);
+  background:transparent;
+  transition:all 0.3s;white-space:nowrap;flex-shrink:0;
+}
+.event-row-btn:hover{
+  background:rgba(255,42,42,0.1);
+  border-color:#FF2A2A;
+  box-shadow:0 0 15px rgba(255,42,42,0.15);
+}
+.events-note{
+  font-family:'Space Grotesk',sans-serif;font-size:0.6rem;
+  color:rgba(224,220,212,0.25);
+  text-align:center;max-width:560px;width:100%;
+  line-height:1.5;
+}
+.events-note strong{color:rgba(255,42,42,0.6);font-weight:600}
+.panel-social-row{display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center}
+.panel-social-row .social-btn{
+  padding:0.5rem 1.1rem;font-size:0.65rem;letter-spacing:0.08em;
+}
+
+/* ===== PRODUCTS PANEL ===== */
+.products-panel{gap:1rem}
+.products-grid{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  width:100%;max-width:560px;
+}
+@media(min-width:520px){.products-grid{grid-template-columns:repeat(2,1fr)}}
+.product-card{
+  background:rgba(30,28,38,0.7);border:1px solid rgba(255,255,255,0.04);
+  overflow:hidden;transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.product-card:hover{
+  border-color:rgba(255,42,42,0.2);
+  transform:translateY(-2px);
+  box-shadow:0 10px 40px rgba(0,0,0,0.4),0 0 0 1px rgba(255,42,42,0.1) inset;
+}
+.product-img-wrap{
+  width:100%;aspect-ratio:1;
+  background:rgba(22,21,29,0.6);
+  position:relative;overflow:hidden;
+}
+.product-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;transition:transform 0.5s,filter 0.5s;
+  filter:brightness(0.85) contrast(1.1);
+}
+.product-card:hover .product-img-wrap img{
+  transform:scale(1.04);
+  filter:brightness(1) contrast(1.15);
+}
+.product-img-wrap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(22,21,29,0.5) 100%);
+  pointer-events:none;
+}
+.product-info{padding:0.85rem 1rem;display:flex;flex-direction:column;gap:0.25rem}
+.product-name{font-family:'Syne',sans-serif;font-weight:600;font-size:0.9rem;color:#e0dcd4}
+.product-variants{display:flex;flex-wrap:wrap;gap:0.75rem;margin:0.15rem 0}
+.product-variant{
+  font-family:'Space Grotesk',sans-serif;font-size:0.7rem;
+  color:rgba(224,220,212,0.5);
+}
+.product-variant strong{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;color:#FF2A2A;
+}
+.product-price{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;color:#FF2A2A;
+}
+.product-cta{
+  display:block;margin-top:0.4rem;padding:0.5rem 0;text-align:center;
+  border:1px solid rgba(255,42,42,0.3);background:transparent;
+  color:#FF2A2A;font-family:'Syne',sans-serif;font-weight:600;
+  font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+  text-decoration:none;transition:all 0.3s;cursor:pointer;
+}
+.product-cta:hover{background:rgba(255,42,42,0.1);border-color:#FF2A2A;box-shadow:0 0 20px rgba(255,42,42,0.15)}
+
+/* ===== FOOTER BAR ===== */
+.bottombar{
+  display:flex;align-items:center;justify-content:center;
+  gap:1.5rem;padding:0.6rem 1.5rem;flex-shrink:0;
+  border-top:1px solid rgba(255,255,255,0.03);
+  background:rgba(22,21,29,0.95);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.bottombar span{
+  font-size:0.6rem;color:rgba(224,220,212,0.25);letter-spacing:0.08em;
+}
+.bottombar a{
+  font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:500;
+  letter-spacing:0.08em;color:rgba(224,220,212,0.35);text-decoration:none;
+  transition:color 0.3s,text-shadow 0.3s;
+}
+.bottombar a:hover{color:#FF2A2A;text-shadow:0 0 12px rgba(255,42,42,0.4)}
+
+/* ===== SELECTION ===== */
+::selection{background:rgba(255,42,42,0.3);color:#fff}
+
+/* ===== SCROLLBAR ON PANELS ===== */
+.panel::-webkit-scrollbar{width:4px}
+.panel::-webkit-scrollbar-track{background:transparent}
+.panel::-webkit-scrollbar-thumb{background:rgba(255,42,42,0.15);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div class="grain-overlay"></div>
+<div class="ambient-glow"></div>
+<div class="glitch-flash" id="glitchFlash"></div>
+
+<!-- ===== WELCOME OVERLAY ===== -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-wordmark" id="welcomeWordmark">ta7telard</div>
+  <div class="welcome-enter" id="welcomeEnter">
+    ENTER<span class="pulse-dot">.</span><span class="pulse-dot">.</span><span class="pulse-dot">.</span>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div class="app" id="app">
+  <!-- Top Bar -->
+  <nav class="topbar">
+    <a class="topbar-brand" href="#" data-panel="social">ta7telard</a>
+    <ul class="topbar-nav">
+      <li><button data-panel="social" class="active">Social</button></li>
+      <li><button data-panel="events">Events</button></li>
+      <li><button data-panel="products">Products</button></li>
+    </ul>
+  </nav>
+
+  <!-- Panels -->
+  <div class="panels">
+
+    <!-- SOCIAL PANEL -->
+    <div class="panel social-panel active" id="panel-social">
+      <div class="hero-wordmark">ta7telard</div>
+      <p class="hero-tagline">Underground Frequencies — Cairo</p>
+      <div class="hero-divider"></div>
+      <div class="social-buttons">
+        <a href="https://instagram.com/ta7telard" target="_blank" rel="noopener" class="social-btn instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          @ta7telard
+        </a>
+        <a href="https://chat.whatsapp.com/LeQP0EFPY1BCM4wEySQlfj" target="_blank" rel="noopener" class="social-btn whatsapp">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- EVENTS PANEL -->
+    <div class="panel events-panel" id="panel-events">
+      <span class="panel-label">Weekly Schedule</span>
+      <h2 class="panel-title">Events</h2>
+      <div class="events-list">
+
+        <!-- THURSDAY -->
+        <div class="event-day-group">
+          <div class="event-day-header">Thursday</div>
+          <div class="event-rows">
+            <div class="event-row">
+              <span class="event-row-city">Cairo</span>
+              <div class="event-row-info">
+                <div class="event-row-venue">Rawi Lounge</div>
+              </div>
+              <a href="https://www.instagram.com/reel/Da5WM3mtQsB/?igsh=OHhydHRtaDJlYWNs" target="_blank" rel="noopener" class="event-row-btn">Reserve</a>
+            </div>
+            <div class="event-row">
+              <span class="event-row-city">Cairo</span>
+              <div class="event-row-info">
+                <div class="event-row-venue">MF Bar</div>
+              </div>
+              <a href="https://www.instagram.com/reel/DbB2zSrxra-/?igsh=OHB4MHczbXJob3N0" target="_blank" rel="noopener" class="event-row-btn">Reserve</a>
+            </div>
+            <div class="event-row">
+              <span class="event-row-city">North Coast</span>
+              <div class="event-row-info">
+                <div class="event-row-venue">Cassette</div>
+              </div>
+              <a href="https://www.instagram.com/p/Da-zG2-CDSu/?igsh=NGZ5NnhnZzJibXhm" target="_blank" rel="noopener" class="event-row-btn">Reserve</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="event-day-group">
+          <div class="event-day-header">Friday</div>
+          <div class="event-rows">
+            <div class="event-row">
+              <span class="event-row-city">North Coast</span>
+              <div class="event-row-info">
+                <div class="event-row-venue">Cassette</div>
+              </div>
+              <a href="https://www.instagram.com/p/DbBA6FXCi2s/?igsh=bmtod29qZTNuazZ5" target="_blank" rel="noopener" class="event-row-btn">Reserve</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="event-day-group">
+          <div class="event-day-header">Saturday</div>
+          <div class="event-rows">
+            <div class="event-row">
+              <span class="event-row-city">Cairo</span>
+              <div class="event-row-info">
+                <div class="event-row-venue">MF Bar</div>
+                <div class="event-row-extra">Guitar live set by Ramstring</div>
+              </div>
+              <a href="https://www.instagram.com/reel/Dam8uOiihB2/?igsh=MWQ3MjlydHl3cWtrMw==" target="_blank" rel="noopener" class="event-row-btn">Reserve</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p class="events-note">Mention <strong>ta7telard</strong> when messaging the organizer — it helps us grow and makes your reservation smoother.</p>
+      <div class="panel-social-row">
+        <a href="https://instagram.com/ta7telard" target="_blank" rel="noopener" class="social-btn instagram">Follow on IG</a>
+        <a href="https://chat.whatsapp.com/LeQP0EFPY1BCM4wEySQlfj" target="_blank" rel="noopener" class="social-btn whatsapp">Join WhatsApp</a>
+      </div>
+    </div>
+
+    <!-- PRODUCTS PANEL -->
+    <div class="panel products-panel" id="panel-products">
+      <span class="panel-label">Merch &amp; Gear</span>
+      <h2 class="panel-title">Products</h2>
+      <div class="products-grid">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <img src="https://i.ibb.co/4RV1HbpL/IMG-20260721-151926-562.jpg" alt="RGB Fan" loading="lazy">
+          </div>
+          <div class="product-info">
+            <h3 class="product-name">RGB Fan</h3>
+            <div class="product-variants">
+              <span class="product-variant">Small <strong>650 EGP</strong></span>
+              <span class="product-variant">Large <strong>1,000 EGP</strong></span>
+            </div>
+            <a href="https://ig.me/m/ta7telard" target="_blank" rel="noopener" class="product-cta">DM to Order</a>
+          </div>
+        </div>
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <img src="https://i.ibb.co/MDd2W3Mv/IMG-20260721-151819-141.jpg" alt="RGB Gloves" loading="lazy">
+          </div>
+          <div class="product-info">
+            <h3 class="product-name">RGB Gloves</h3>
+            <span class="product-price">800 EGP</span>
+            <a href="https://ig.me/m/ta7telard" target="_blank" rel="noopener" class="product-cta">DM to Order</a>
+          </div>
+        </div>
+      </div>
+      <div class="panel-social-row">
+        <a href="https://ig.me/m/ta7telard" target="_blank" rel="noopener" class="social-btn instagram">Order via IG</a>
+        <a href="https://chat.whatsapp.com/LeQP0EFPY1BCM4wEySQlfj" target="_blank" rel="noopener" class="social-btn whatsapp">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <footer class="bottombar">
+    <span>ta7telard — Cairo, EG</span>
+    <a href="https://instagram.com/ta7telard" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://chat.whatsapp.com/LeQP0EFPY1BCM4wEySQlfj" target="_blank" rel="noopener">WhatsApp</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const welcomeOverlay = document.getElementById('welcomeOverlay');
+  const welcomeWordmark = document.getElementById('welcomeWordmark');
+  const glitchFlash = document.getElementById('glitchFlash');
+  const app = document.getElementById('app');
+  const panels = document.querySelectorAll('.panel');
+  const navButtons = document.querySelectorAll('[data-panel]');
+  const brandBtn = document.querySelector('.topbar-brand');
+
+  // === WELCOME SCREEN ===
+  let welcomeDismissed = false;
+  let glitchInterval;
+
+  function startGlitch(){
+    glitchInterval = setInterval(function(){
+      welcomeWordmark.classList.add('glitching');
+      glitchFlash.classList.add('active');
+      setTimeout(function(){
+        welcomeWordmark.classList.remove('glitching');
+        glitchFlash.classList.remove('active');
+      }, 120 + Math.random() * 150);
+    }, 2000 + Math.random() * 3000);
+  }
+
+  function dismissWelcome(){
+    if(welcomeDismissed) return;
+    welcomeDismissed = true;
+    clearInterval(glitchInterval);
+    glitchFlash.classList.add('active');
+    setTimeout(function(){
+      glitchFlash.classList.remove('active');
+      welcomeOverlay.classList.add('dismiss');
+      app.classList.add('visible');
+    }, 150);
+  }
+
+  setTimeout(startGlitch, 1500);
+  setTimeout(dismissWelcome, 4500);
+  welcomeOverlay.addEventListener('click', dismissWelcome);
+
+  // === PANEL SWITCHING ===
+  function switchPanel(panelId){
+    panels.forEach(function(p){p.classList.remove('active')});
+    var target = document.getElementById('panel-' + panelId);
+    if(target) target.classList.add('active');
+
+    // Update nav active state
+    navButtons.forEach(function(btn){
+      btn.classList.remove('active');
+      if(btn.dataset.panel === panelId) btn.classList.add('active');
+    });
+  }
+
+  navButtons.forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      switchPanel(btn.dataset.panel);
+    });
+  });
+
+  brandBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    switchPanel('social');
+  });
+
+})();
+</script>
+
+</body>
+</html>
